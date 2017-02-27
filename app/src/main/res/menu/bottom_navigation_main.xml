@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_btmnav_latest"
+        android:title="@string/latest_news"
+        android:checked="true"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:icon="@drawable/news_icon"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:orderInCategory="500"/>
+    <item
+        android:id="@+id/menu_btmnav_provider"
+        android:title="@string/providers"
+        android:checked="true"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:icon="@drawable/ic_twitter"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:orderInCategory="1000"/>
+    <item
+        android:id="@+id/menu_btmnav_starred"
+        android:title="@string/starred"
+        android:checked="true"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:icon="@drawable/ic_turned_in_black_24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:orderInCategory="1500"/>
+</menu>

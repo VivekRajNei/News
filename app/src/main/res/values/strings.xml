@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">NewsAPI</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_splash">NewsAPI</string>
+    <string name="menu_logout">Logout</string>
+
+    <!--Network data-->
+    <string name="flickr_base_url">https://www.flickr.com/services/rest/?method=flickr.photosets.getPhotos</string>
+    <string name="format">format=json</string>
+    <string name="apikey">api_key=dc46acea0b58b015ef198913f32dc277</string>
+    <string name="photoset_id">photoset_id=72157660611130403</string>
+
+
+    <string name="latest_news">Lateset News</string>
+    <string name="starred">Starred</string>
+    <string name="providers">Providers</string>
+    <string name="empty_view_title_text">No Data found</string>
+    <string name="empty_view_subtitle_text">Make sure you have active internet connection</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="email">Email</string>
+    <string name="splash_des" translatable="false">Company logo</string>
+    <string name="forget_password">Forget password?</string>
+    <string name="login">Login</string>
+    <string name="login_required">Login to continue</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="success">Login Success</string>
+    <string name="err_email">Invalid email id</string>
+    <string name="err_login">Login Failed</string>
+    <string name="err_password">Password should be 8 or more character long</string>
+    <string name="returning_user">Returning user</string>
+    <string name="err_register">Unable to register</string>
+    <string name="customize">Customize</string>
+    <string name="ok">OK</string>
+    <string name="title_activity_file">File Operations</string>
+    <string name="status">Ambient Status</string>
+    <string name="status_more">Know what people are up to right now. Your music, battery and location statuses are on.</string>
+    <string name="menu_about">DevProfile</string>
+    <string name="menu_showDialog">Show Dialog</string>
+    <string name="menu_exit">Exit</string>
+    <string name="item_des_image">User Photo</string>
+    <string name="signup_success">Signup Success!</string>
+    <string name="err_name">Name should be more than 4 character long</string>
+    <string name="reg_hint_name">Name (more than 4 character long)</string>
+    <string name="reg_hint_email">Email</string>
+    <string name="reg_hint_password">Password (should be 8 character long)</string>
+    <string name="logout">Logout</string>
+    <string name="theme_chooser_image_description">Choose one of theme</string>
+    <string name="change_theme">Change theme</string>
+    <string name="title_activity_grid">GridActivity</string>
+    <string name="grid">Grid view</string>
+    <string name="chooser">Chooser</string>
+    <string name="search">Search</string>
+    <string name="title_activity_gallery">Gallery</string>
+    <string name="section_format">Selection Format</string>
+    <string name="err_pass_man">Password should not be empty</string>
+
+</resources>
