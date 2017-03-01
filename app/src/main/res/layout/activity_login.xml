@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/rl_activity_login_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -107,10 +108,4 @@
             app:layout_constraintLeft_toLeftOf="@+id/login"
             app:layout_constraintRight_toRightOf="@+id/login" />
     </android.support.constraint.ConstraintLayout>
-    <ProgressBar
-        android:id="@+id/pgbar_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_centerInParent="true"/>
 </RelativeLayout>

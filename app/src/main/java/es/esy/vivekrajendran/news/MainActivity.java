@@ -1,3 +1,25 @@
+/*
+* Copyright (c) <2017> <Vivek Rajendran>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+*/
+
 package es.esy.vivekrajendran.news;
 
 import android.content.Intent;
@@ -9,6 +31,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
@@ -23,19 +46,25 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-//import com.google.firebase.auth.FirebaseAuth;
-//import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import es.esy.vivekrajendran.news.dialogs.DevDialog;
-import es.esy.vivekrajendran.news.fragments.ImageFragment;
 import es.esy.vivekrajendran.news.fragments.LatestNewsFragment;
 import es.esy.vivekrajendran.news.fragments.ProviderFragment;
+
+
+/**
+ * This activity is the entry point after user is logged in.
+ * It also includes NavigationView and BottomNavigationView.
+ */
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-//    private FirebaseAuth mFirebaseAuth;
-//    private FirebaseAuth.AuthStateListener mAuthStateListener;
+     //private field for FirebaseAuth instance for firebase reference
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
     private NavigationView navigationView;
 
     @Override
@@ -48,7 +77,7 @@ public class MainActivity extends AppCompatActivity
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
             setSupportActionBar(toolbar);
 
-            //initListener();
+            initListener();
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -66,7 +95,7 @@ public class MainActivity extends AppCompatActivity
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                changeFrag(item.getItemId());
+                changeFragment(item.getItemId());
                 return true;
             }
         });
@@ -85,6 +114,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * This method will be called whenever overflow options menu item is clicked.
+     * @param item represents clicked overflow item.
+     * @return always return true.
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -96,9 +130,9 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(MainActivity.this, GalleryActivity.class));
                 break;
             case R.id.nav_settings:
-                startActivity(new Intent(this, LoginActivity.class));
                 break;
             case R.id.nav_developer:
+                //getting fragmenttransaction object then show Dialog fragment
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fm_dev = fragmentManager.beginTransaction();
                 DevDialog dev = new DevDialog();
@@ -106,75 +140,97 @@ public class MainActivity extends AppCompatActivity
                 //dev.show(fm_dev, "dev");
                 break;
             case R.id.nav_share:
-//                ShareCompat.IntentBuilder.from(MainActivity.this)
-//                        .createChooserIntent()
-//                        .setData()
+                //initializing sharecompat to share the app
+                ShareCompat.IntentBuilder.from(MainActivity.this)
+                        .createChooserIntent()
+                        .setData(Uri.parse("mailto:"));
                 break;
             case R.id.nav_feedback:
+                //initializing intent to share feedback
                 Intent feedbackIntent = new Intent();
                 feedbackIntent.setAction(Intent.ACTION_SENDTO);
                 feedbackIntent.setData(Uri.parse("mailto:vivekrajendrn@gmail.com"));
                 startActivity(Intent.createChooser(feedbackIntent, "Send feedback with"));
                 break;
             case R.id.nav_logout:
-//                mFirebaseAuth.signOut();
+                //sinning out current user
+                mFirebaseAuth.signOut();
                 break;
         }
 
+        //Initializing drawer layout
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-//    private void initListener() {
-//        mFirebaseAuth = FirebaseAuth.getInstance();
-//        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser mUser = firebaseAuth.getCurrentUser();
-//                if (mUser == null) {
-//                    Intent intent = new Intent(MainActivity.this, SplashActivity.class);
-//                    intent.putExtra("show_image", true);
-//                    startActivity(intent);
-//                } else {
-//                    View header = navigationView.getHeaderView(0);
-//                    final ImageView profPic = (ImageView) header.findViewById(R.id.header_imageView);
-//                    TextView name = (TextView) header.findViewById(R.id.header_name);
-//                    TextView email = (TextView) header.findViewById(R.id.header_email);
-//                    Glide.with(getApplicationContext())
-//                            .load(mUser.getPhotoUrl())
-//                            .asBitmap()
-//                            .centerCrop()
-//                            .placeholder(R.drawable.ic_account_circle_black_24px)
-//                            .into(new BitmapImageViewTarget(profPic) {
-//                                @Override
-//                                protected void setResource(Bitmap resource) {
-//                                    RoundedBitmapDrawable circularBitmapDrawable =
-//                                            RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
-//                                    circularBitmapDrawable.setCircular(true);
-//                                    profPic.setImageDrawable(circularBitmapDrawable);
-//                                }
-//                            });
-//                    name.setText(mUser.getDisplayName());
-//                    email.setText(mUser.getEmail());
-//                }
-//            }
-////        };
-//    }
+    /**
+     * mehod to initialize the firebaseauth and authstatelistener object
+     */
+    private void initListener() {
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser mUser = firebaseAuth.getCurrentUser();
+                if (mUser == null) {
+                    Intent intent = new Intent(MainActivity.this, SplashActivity.class);
+                    intent.putExtra("show_image", true);
+                    startActivity(intent);
+                } else {
+                    //Setting up user profile in drawer layout
+                    View header = navigationView.getHeaderView(0);
+                    final ImageView profPic = (ImageView) header.findViewById(R.id.header_imageView);
+                    TextView name = (TextView) header.findViewById(R.id.header_name);
+                    TextView email = (TextView) header.findViewById(R.id.header_email);
+                    Glide.with(getApplicationContext())
+                            .load(mUser.getPhotoUrl())
+                            .asBitmap()
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_account_circle_black_24px)
+                            .into(new BitmapImageViewTarget(profPic) {
+                                @Override
+                                protected void setResource(Bitmap resource) {
+                                    RoundedBitmapDrawable circularBitmapDrawable =
+                                            RoundedBitmapDrawableFactory.create(getApplicationContext().getResources(), resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    profPic.setImageDrawable(circularBitmapDrawable);
+                                }
+                            });
+                    name.setText(mUser.getDisplayName());
+                    email.setText(mUser.getEmail());
+                }
+            }
+        };
+    }
 
+    /**
+     * adding authstatelistener object when activity starts
+     */
     @Override
     protected void onStart() {
         super.onStart();
-        //mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+        if (mAuthStateListener != null) {
+            mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+        }
     }
 
+    /**
+     * removing authstatelistener object when activity stops
+     */
     @Override
     protected void onStop() {
         super.onStop();
-        //mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        if (mAuthStateListener != null) {
+        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
     }
 
-    private void changeFrag(int id) {
+    /**
+     * A helper method to change fragments effortlessly
+     * @param id param passed to specify fragment needs to be shown
+     */
+    private void changeFragment(int id) {
         switch (id) {
             case R.id.menu_btmnav_latest:
                 getSupportFragmentManager().beginTransaction()
@@ -191,7 +247,8 @@ public class MainActivity extends AppCompatActivity
                         .replace(R.id.main_frame, new StarredFragment())
                         .commit();
                 break;
+            default:
+                throw new IllegalArgumentException("changeFragment: invalid id passed");
         }
-
     }
 }

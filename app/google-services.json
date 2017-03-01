@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "30023133351",
+    "firebase_url": "https://newsapi-7d1a1.firebaseio.com",
+    "project_id": "newsapi-7d1a1",
+    "storage_bucket": "newsapi-7d1a1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30023133351:android:be2db4a0391a6a64",
+        "android_client_info": {
+          "package_name": "es.esy.vivekrajendran.news"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "30023133351-829c09n7flmokfc8sloomnqmf216jm09.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "es.esy.vivekrajendran.news",
+            "certificate_hash": "65eb6fbe65d190b6c511acc0a9a7224897730253"
+          }
+        },
+        {
+          "client_id": "30023133351-dk9q4s8gmeblusamacehblp1mfk7f2fg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVhP7BztJTNQIXSV2JuzcSo9pN2LZ04jQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "30023133351-dk9q4s8gmeblusamacehblp1mfk7f2fg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

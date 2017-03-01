@@ -24,17 +24,7 @@ public class NewsContract {
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(URI_BASE, PATH_NEWS);
 
-        /**
-         * The MIME type of the {@link #CONTENT_URI} for a list of pets.
-         */
-        public static final String CONTENT_LIST_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_NEWS;
-
-        /**
-         * The MIME type of the {@link #CONTENT_URI} for a single pet.
-         */
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_NEWS + "/#";
+        public static final Uri CONTENT_URI_ID = Uri.withAppendedPath(URI_BASE, PATH_NEWS + "/#");
 
         public static final String TABLE_NAME = "news";
         public static final String COLUMN_ID = "_id";
@@ -63,11 +53,6 @@ public class NewsContract {
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(URI_BASE, PATH_PROVIDER);
 
-        public static final String CONTENT_LIST_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PROVIDER;
-
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PROVIDER + "/#";
         public static final String TABLE_NAME = "provider";
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_PROVIDER_ID = "providerId";

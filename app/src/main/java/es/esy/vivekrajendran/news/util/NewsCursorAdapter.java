@@ -1,9 +1,32 @@
+/*
+* Copyright (c) <2017> <Vivek Rajendran>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+*/
+
 package es.esy.vivekrajendran.news.util;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
@@ -21,12 +44,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import es.esy.vivekrajendran.news.R;
-import es.esy.vivekrajendran.news.WebviewActivity;
+import es.esy.vivekrajendran.news.ContentActivity;
 import es.esy.vivekrajendran.news.data.NewsContract;
 
 public class NewsCursorAdapter extends CursorAdapter {
 
     private Activity activity;
+    private int position;
 
     public NewsCursorAdapter(Activity activity, Cursor c) {
         super(activity.getApplicationContext(), c, 0);
@@ -57,35 +81,42 @@ public class NewsCursorAdapter extends CursorAdapter {
             ImageView share = (ImageView) view.findViewById(R.id.img_item_news_share);
             final ImageView optionsMenu = (ImageView) view.findViewById(R.id.img_item_news_optionsmenu);
 
-            int columnNewsImage = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_URL_TO_IMAGE);
-            int columnHeadline = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_TITLE);
+            final int columnNewsImage = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_URL_TO_IMAGE);
+            final int columnHeadline = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_TITLE);
             int columnProviderName = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_AUTHOR);
             final int columnNewsURL = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_URL);
             int columnPublished = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_URL);
+            final int columnDes = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_DESCRIPTION);
 
             newsProviderImage.setImageResource(R.drawable.ic_account_circle_black_24px);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, WebviewActivity.class);
+                    Intent intent = new Intent(context, ContentActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                    intent.putExtra("url", columnNewsURL);
+                    intent.putExtra("url", cursor.getString(columnNewsImage));
+                    intent.putExtra("title", cursor.getString(columnHeadline));
+                    intent.putExtra("urlNews", cursor.getString(columnNewsURL));
+                    intent.putExtra("description", cursor.getString(columnDes));
                     context.startActivity(intent);
                 }
             });
+
             if (newsImage != null) {
                 Glide.with(context)
                         .load(cursor.getString(columnNewsImage))
                         .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(newsImage);
             }
+
             headline.setText(cursor.getString(columnHeadline));
             newsProviderName.setText(cursor.getString(columnProviderName));
             optionsMenu.setImageResource(R.drawable.ic_more_vert_black_24dp);
             optionsMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    setPostion(cursor.getPosition());
                     showPopupMenu(optionsMenu);
                 }
             });
@@ -101,15 +132,19 @@ public class NewsCursorAdapter extends CursorAdapter {
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ShareCompat.IntentBuilder
-                            .from(activity)
-                            .setType("text/plain")
-                            .setText(cursor.getString(columnNewsURL))
-                            .setChooserTitle("Open using")
-                            .startChooser();
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, cursor.getString(columnNewsURL));
+                    sendIntent.setType("text/plain");
+                    context.startActivity(sendIntent);
                 }
             });
+            Log.i("TAG", "bindView: cursor id " + cursor.getPosition());
         }
+    }
+
+    private void setPostion(int position) {
+        this.position = position;
     }
 
     private void showPopupMenu(View view) {
@@ -129,7 +164,11 @@ public class NewsCursorAdapter extends CursorAdapter {
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.menu_overflow_hide:
-                    Toast.makeText(activity, "Hide", Toast.LENGTH_SHORT).show();
+                    Uri deleteUri = Uri.withAppendedPath(NewsContract.News.CONTENT_URI, String.valueOf(position));
+                    activity.getContentResolver().delete(deleteUri,
+                            NewsContract.News.COLUMN_ID, new String[] {
+                                    String.valueOf(position)});
+                    Toast.makeText(activity, "Deleted", Toast.LENGTH_SHORT).show();
                     return true;
                 default:
             }

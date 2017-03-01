@@ -20,21 +20,38 @@
 * SOFTWARE.
 */
 
-package es.esy.vivekrajendran.news.data;
+package es.esy.vivekrajendran.news;
+
+import android.database.Cursor;
+import android.net.Uri;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+import java.net.URI;
+
+import es.esy.vivekrajendran.news.data.NewsContract;
+
+public class PhotoViewerActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_photo_viewer);
 
 
-class PrefContract {
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.vp_photoviewer);
+//        mViewPager.setAdapter();
+        String imageString = getIntent().getStringExtra("uri");
 
-    final class Json {
-        static final String PREF_NAME = "Json";
-        static final String JSTRING = "jString";
-    }
-
-    static final class DbTime {
-        static final String PREF_NAME = "DbTime";
-        static final String NEWS = "news";
-        static final String PROVIDERS = "providers";
-        static final String IMAGE = "image";
-        static final String VIDEO = "video";
+        if (imageString != null) {
+            Uri imageUri = Uri.parse(imageString);
+            Cursor cursor = getContentResolver().query(
+                    NewsContract.Images.CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    null);
+        }
     }
 }
