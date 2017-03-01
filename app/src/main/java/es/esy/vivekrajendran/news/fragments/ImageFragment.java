@@ -24,6 +24,7 @@ package es.esy.vivekrajendran.news.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -43,13 +44,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import es.esy.vivekrajendran.news.PhotoViewerActivity;
 import es.esy.vivekrajendran.news.R;
 import es.esy.vivekrajendran.news.data.NewsContract;
 import es.esy.vivekrajendran.news.data.UserPref;
 import es.esy.vivekrajendran.news.network.NewsAsync;
 import es.esy.vivekrajendran.news.util.NetworkChecker;
 
-public class ImageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ImageFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int IMAGE_LOADER = 10;
     private Adapter imageAdapter;
@@ -118,7 +120,7 @@ public class ImageFragment extends Fragment implements LoaderManager.LoaderCallb
         }
 
         @Override
-        public void bindView(View view, Context context, Cursor cursor) {
+        public void bindView(View view, final Context context, Cursor cursor) {
             ImageView imageView = (ImageView) view.findViewById(R.id.iv_item_image);
 
             int columnURL = cursor.getColumnIndexOrThrow(NewsContract.Images.COLUMN_URL);
@@ -132,6 +134,15 @@ public class ImageFragment extends Fragment implements LoaderManager.LoaderCallb
                     .placeholder(R.drawable.ic_account_circle_black_24px)
                     .into(imageView);
             //textView.setText(cursor.getString(columnURL));
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, PhotoViewerActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }

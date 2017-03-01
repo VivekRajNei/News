@@ -50,6 +50,7 @@ import es.esy.vivekrajendran.news.util.NetworkChecker;
 
 public class ProviderFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int PROVIDER_LOADER = 142;
     private ProviderAdapter providerAdapter;
 
     @Nullable
@@ -68,6 +69,8 @@ public class ProviderFragment extends Fragment implements LoaderManager.LoaderCa
         GridView gridView = (GridView) view.findViewById(R.id.gv_providers_fragment);
         gridView.setNumColumns(2);
         gridView.setAdapter(providerAdapter);
+
+        getLoaderManager().initLoader(PROVIDER_LOADER, null, this);
 
     }
 

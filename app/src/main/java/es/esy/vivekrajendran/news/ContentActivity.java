@@ -67,11 +67,16 @@ public class ContentActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, intent.getStringExtra("urlNews"));
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, intent.getStringExtra("urlNews"));
+                        sendIntent.setType("text/plain");
+                        startActivity(sendIntent);
+                    }
+                });
             }
         });
     }

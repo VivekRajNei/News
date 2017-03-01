@@ -50,6 +50,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import es.esy.vivekrajendran.news.dialogs.DevDialog;
+import es.esy.vivekrajendran.news.fragments.FavouritesFragment;
 import es.esy.vivekrajendran.news.fragments.LatestNewsFragment;
 import es.esy.vivekrajendran.news.fragments.ProviderFragment;
 
@@ -244,7 +245,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.menu_btmnav_starred:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.main_frame, new StarredFragment())
+                        .replace(R.id.main_frame, new FavouritesFragment())
                         .commit();
                 break;
             default:

@@ -241,18 +241,18 @@ public class NewsProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case NEWS:
-                return updatePet(uri, values, selection, selectionArgs);
+                return updateData(uri, values, selection, selectionArgs);
             case NEWS_ID:
                 selection = NewsContract.News.COLUMN_ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                return updatePet(uri, values, selection, selectionArgs);
+                return updateData(uri, values, selection, selectionArgs);
 
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
     }
 
-    private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    private int updateData(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SQLiteDatabase database = mDBHelper.getWritableDatabase();
         int rowsUpdated = database.update(NewsContract.News.TABLE_NAME, values, selection, selectionArgs);
 

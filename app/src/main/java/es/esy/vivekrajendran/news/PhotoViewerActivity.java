@@ -23,35 +23,82 @@
 package es.esy.vivekrajendran.news;
 
 import android.database.Cursor;
-import android.net.Uri;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import java.net.URI;
+import android.widget.TextView;
 
 import es.esy.vivekrajendran.news.data.NewsContract;
+import es.esy.vivekrajendran.news.fragments.ImageViewerFragment;
 
-public class PhotoViewerActivity extends AppCompatActivity {
+public class PhotoViewerActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private Cursor cursor;
+    private ViewPager mViewPager;
+    private TextView noOfPhotos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_viewer);
+        mViewPager = (ViewPager) findViewById(R.id.vp_photoviewer);
+        noOfPhotos = (TextView) findViewById(R.id.tv_photoviewer);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.vp_photoviewer);
-//        mViewPager.setAdapter();
-        String imageString = getIntent().getStringExtra("uri");
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] selection = new String[] {NewsContract.Images.COLUMN_URL};
+        return new CursorLoader(
+                getApplicationContext(),
+                NewsContract.Images.CONTENT_URI,
+                selection,
+                null,
+                null,
+                null);
+    }
 
-        if (imageString != null) {
-            Uri imageUri = Uri.parse(imageString);
-            Cursor cursor = getContentResolver().query(
-                    NewsContract.Images.CONTENT_URI,
-                    null,
-                    null,
-                    null,
-                    null);
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        cursor = data;
+        mViewPager.setAdapter(new PhotViewPagerAdapter(getSupportFragmentManager()));
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        cursor = null;
+    }
+
+    private class PhotViewPagerAdapter extends FragmentPagerAdapter {
+
+        public PhotViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            int urlColumn = cursor.getColumnIndexOrThrow(NewsContract.Images.COLUMN_URL);
+            Bundle bundle = new Bundle();
+            bundle.putString("url", cursor.getString(urlColumn));
+            ImageViewerFragment imageViewerFragment = new ImageViewerFragment();
+            imageViewerFragment.setArguments(bundle);
+            noOfPhotos.setText(position + "/" + cursor.getCount());
+            return imageViewerFragment;
+        }
+
+        @Override
+        public int getCount() {
+            return cursor.getCount();
         }
     }
 }

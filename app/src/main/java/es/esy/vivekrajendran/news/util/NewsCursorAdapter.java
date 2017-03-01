@@ -23,11 +23,11 @@
 package es.esy.vivekrajendran.news.util;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,7 +61,6 @@ public class NewsCursorAdapter extends CursorAdapter {
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
 
         try {
-            Log.i("TAG", "newView: ");
             return LayoutInflater.from(context).inflate(R.layout.item_news_heading, parent, false);
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,6 +86,7 @@ public class NewsCursorAdapter extends CursorAdapter {
             final int columnNewsURL = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_URL);
             int columnPublished = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_URL);
             final int columnDes = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_DESCRIPTION);
+            int columnFav = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_FAV);
 
             newsProviderImage.setImageResource(R.drawable.ic_account_circle_black_24px);
             view.setOnClickListener(new View.OnClickListener() {
@@ -121,11 +121,32 @@ public class NewsCursorAdapter extends CursorAdapter {
                 }
             });
             newsPublished.setText(cursor.getString(columnPublished));
-            addToFav.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+
+            final String fav = cursor.getString(columnFav);
+            if ("Y".equals(fav)) {
+                addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp);
+            } else addToFav.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
             addToFav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp);
+                    ContentValues contentValues = new ContentValues();
+                    if ("Y".equals(fav)) {
+                        addToFav.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+                        contentValues.put(NewsContract.News.COLUMN_FAV, "N");
+                    } else {
+                        addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp);
+                        contentValues.put(NewsContract.News.COLUMN_FAV, "Y");
+                    }
+
+                    int i = context.getContentResolver().update(
+                            Uri.withAppendedPath(NewsContract.News.CONTENT_URI, String.valueOf(position)),                            contentValues,
+                            null,
+                            null);
+                    if(i > 0 ) {
+                        Toast.makeText(context, "Added to favourites", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "Failed to add", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
             share.setImageResource(R.drawable.ic_menu_share);
