@@ -23,11 +23,13 @@
 package es.esy.vivekrajendran.news.fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -39,7 +41,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -55,6 +56,8 @@ public class ImageFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final int IMAGE_LOADER = 10;
     private Adapter imageAdapter;
+    private String BaseUrl = "https://pixabay.com/api/?key=4654053-f29f39f63a9a301a1ec7dae0d&q=";
+    private String query = "nature";
 
     @Nullable
     @Override
@@ -69,9 +72,17 @@ public class ImageFragment extends Fragment implements LoaderManager.LoaderCallb
         imageAdapter = new Adapter(getActivity(), null);
         gridView.setNumColumns(2);
         gridView.setAdapter(imageAdapter);
-        String url = "https://pixabay.com/api/?key=4654053-f29f39f63a9a301a1ec7dae0d&q=nature";
-        getData(url);
+        getData(BaseUrl + query);
         getLoaderManager().initLoader(IMAGE_LOADER, null, this);
+
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_frag_images);
+        if (!NetworkChecker.getInstance(getContext()).isNetworkAvailable()) fab.setVisibility(View.GONE);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 

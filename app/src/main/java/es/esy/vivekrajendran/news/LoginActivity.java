@@ -85,9 +85,8 @@ public class LoginActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.et_password_login);
         Button login = (Button) findViewById(R.id.login);
         Button register = (Button) findViewById(R.id.btn_register_login);
-        progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme);
+        progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Signning in");
-        progressDialog.setIndeterminate(true);
 
         //setting up click event listener to listen for click of register button
         //when click event occur it will take to the register activity

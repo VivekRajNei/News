@@ -19,4 +19,12 @@
         android:layout_marginBottom="16dp"
         android:textStyle="bold"
         android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/btn_activity_photo_close"
+        android:layout_margin="16dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/ic_clear_black_24px"/>
 </RelativeLayout>

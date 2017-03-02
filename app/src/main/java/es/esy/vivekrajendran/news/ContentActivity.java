@@ -8,7 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -36,8 +35,10 @@ public class ContentActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final Intent intent = getIntent();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(intent.getStringExtra("title"));
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(intent.getStringExtra("title"));
+        }
 
         progressBar = (ProgressBar) findViewById(R.id.pb_content_web);
         ImageView imageView = (ImageView) findViewById(R.id.iv_activity_scrollling_toolbar);
@@ -74,9 +75,9 @@ public class ContentActivity extends AppCompatActivity {
                         sendIntent.setAction(Intent.ACTION_SEND);
                         sendIntent.putExtra(Intent.EXTRA_TEXT, intent.getStringExtra("urlNews"));
                         sendIntent.setType("text/plain");
-                        startActivity(sendIntent);
+                        ContentActivity.this.startActivity(sendIntent);
                     }
-                });
+                }).start();
             }
         });
     }

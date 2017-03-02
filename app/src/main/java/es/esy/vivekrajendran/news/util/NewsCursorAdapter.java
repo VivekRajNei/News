@@ -126,6 +126,7 @@ public class NewsCursorAdapter extends CursorAdapter {
             if ("Y".equals(fav)) {
                 addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp);
             } else addToFav.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+
             addToFav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -145,7 +146,7 @@ public class NewsCursorAdapter extends CursorAdapter {
                     if(i > 0 ) {
                         Toast.makeText(context, "Added to favourites", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(context, "Failed to add", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Failed to add " + i, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -153,11 +154,16 @@ public class NewsCursorAdapter extends CursorAdapter {
             share.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, cursor.getString(columnNewsURL));
-                    sendIntent.setType("text/plain");
-                    context.startActivity(sendIntent);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, cursor.getString(columnNewsURL));
+                            sendIntent.setType("text/plain");
+                            context.startActivity(sendIntent);
+                        }
+                    }).start();
                 }
             });
             Log.i("TAG", "bindView: cursor id " + cursor.getPosition());

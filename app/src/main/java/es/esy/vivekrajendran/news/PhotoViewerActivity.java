@@ -32,16 +32,21 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import es.esy.vivekrajendran.news.data.NewsContract;
 import es.esy.vivekrajendran.news.fragments.ImageViewerFragment;
 
-public class PhotoViewerActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class PhotoViewerActivity extends AppCompatActivity {
 
+    private static final int LATEST_PHOTO_LOADER = 474;
     private Cursor cursor;
     private ViewPager mViewPager;
     private TextView noOfPhotos;
+    private Button closeButton;
+    LoaderManager.LoaderCallbacks<Cursor> cursorLoaderCallbacks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,50 +54,34 @@ public class PhotoViewerActivity extends AppCompatActivity implements LoaderMana
         setContentView(R.layout.activity_photo_viewer);
         mViewPager = (ViewPager) findViewById(R.id.vp_photoviewer);
         noOfPhotos = (TextView) findViewById(R.id.tv_photoviewer);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] selection = new String[] {NewsContract.Images.COLUMN_URL};
-        return new CursorLoader(
-                getApplicationContext(),
-                NewsContract.Images.CONTENT_URI,
-                selection,
-                null,
-                null,
-                null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        cursor = data;
-        mViewPager.setAdapter(new PhotViewPagerAdapter(getSupportFragmentManager()));
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        cursor = null;
+        closeButton = (Button) findViewById(R.id.btn_activity_photo_close);
+        initLoader();
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     private class PhotViewPagerAdapter extends FragmentPagerAdapter {
 
-        public PhotViewPagerAdapter(FragmentManager fm) {
+        PhotViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-            int urlColumn = cursor.getColumnIndexOrThrow(NewsContract.Images.COLUMN_URL);
+//            if (position == -1) {
+//                cursor.move(position + 1);
+//            } else
+                cursor.move(position+1);
+            int columnURL = cursor.getColumnIndexOrThrow(NewsContract.Images.COLUMN_URL);
             Bundle bundle = new Bundle();
-            bundle.putString("url", cursor.getString(urlColumn));
+            bundle.putString("url", cursor.getString(columnURL));
             ImageViewerFragment imageViewerFragment = new ImageViewerFragment();
             imageViewerFragment.setArguments(bundle);
-            noOfPhotos.setText(position + "/" + cursor.getCount());
+            noOfPhotos.setText(position + "/" + getCount());
             return imageViewerFragment;
         }
 
@@ -100,5 +89,33 @@ public class PhotoViewerActivity extends AppCompatActivity implements LoaderMana
         public int getCount() {
             return cursor.getCount();
         }
+    }
+
+    private void initLoader() {
+        cursorLoaderCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                return new CursorLoader(
+                        getApplicationContext(),
+                        NewsContract.Images.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null);
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+                cursor = data;
+                mViewPager.setAdapter(new PhotViewPagerAdapter(getSupportFragmentManager()));
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Cursor> loader) {
+                cursor = null;
+            }
+        };
+
+        getSupportLoaderManager().initLoader(LATEST_PHOTO_LOADER, null, cursorLoaderCallbacks);
     }
 }

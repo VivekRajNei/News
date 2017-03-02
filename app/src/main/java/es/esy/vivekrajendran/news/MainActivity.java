@@ -38,7 +38,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -61,12 +63,13 @@ import es.esy.vivekrajendran.news.fragments.ProviderFragment;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
 
      //private field for FirebaseAuth instance for firebase reference
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private NavigationView navigationView;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,18 +90,20 @@ public class MainActivity extends AppCompatActivity
 
             navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
+            searchView = (SearchView) findViewById(R.id.sv_main);
+            searchView.setOnQueryTextListener(this);
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_frame, new LatestNewsFragment())
-                .commit();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_frame, new LatestNewsFragment())
+                    .commit();
 
-        BottomNavigationView mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                changeFragment(item.getItemId());
-                return true;
-            }
+            BottomNavigationView mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+            mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    changeFragment(item.getItemId());
+                    return true;
+                }
         });
         } catch (Exception e) {
             e.printStackTrace();
@@ -234,16 +239,23 @@ public class MainActivity extends AppCompatActivity
     private void changeFragment(int id) {
         switch (id) {
             case R.id.menu_btmnav_latest:
+                searchView.setVisibility(View.VISIBLE);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isSearch", false);
+                LatestNewsFragment latestNewsFragment = new LatestNewsFragment();
+                latestNewsFragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.main_frame, new LatestNewsFragment())
+                        .replace(R.id.main_frame, latestNewsFragment)
                         .commit();
                 break;
             case R.id.menu_btmnav_provider:
+                searchView.setVisibility(View.GONE);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.main_frame, new ProviderFragment())
                         .commit();
                 break;
             case R.id.menu_btmnav_starred:
+                searchView.setVisibility(View.GONE);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.main_frame, new FavouritesFragment())
                         .commit();
@@ -251,5 +263,25 @@ public class MainActivity extends AppCompatActivity
             default:
                 throw new IllegalArgumentException("changeFragment: invalid id passed");
         }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        searchView.setVisibility(View.VISIBLE);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isSearch", true);
+        bundle.putStringArray("query", new String[] {query});
+        LatestNewsFragment latestNewsFragment = new LatestNewsFragment();
+        latestNewsFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_frame, latestNewsFragment)
+                .commit();
+        searchView.clearFocus();
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 }
