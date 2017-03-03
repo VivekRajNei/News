@@ -116,6 +116,6 @@ public class PhotoViewerActivity extends AppCompatActivity {
             }
         };
 
-        getSupportLoaderManager().initLoader(LATEST_PHOTO_LOADER, null, cursorLoaderCallbacks);
+            getSupportLoaderManager().initLoader(LATEST_PHOTO_LOADER, null, cursorLoaderCallbacks);
     }
 }

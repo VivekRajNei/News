@@ -59,7 +59,6 @@ public class NewsCursorAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-
         try {
             return LayoutInflater.from(context).inflate(R.layout.item_news_heading, parent, false);
         } catch (Exception e) {
@@ -73,20 +72,28 @@ public class NewsCursorAdapter extends CursorAdapter {
         if (cursor != null) {
             ImageView newsImage = (ImageView) view.findViewById(R.id.img_item_news_main);
             ImageView newsProviderImage = (ImageView) view.findViewById(R.id.img_item_news_provider);
-            TextView headline = (TextView) view.findViewById(R.id.tv_item_news_headline);
+            TextView newsHeadline = (TextView) view.findViewById(R.id.tv_item_news_headline);
             TextView newsProviderName = (TextView) view.findViewById(R.id.tv_item_news_providername);
             TextView newsPublished = (TextView) view.findViewById(R.id.tv_item_news_timepublished);
             final ImageView addToFav = (ImageView) view.findViewById(R.id.img_item_news_addtofav);
             ImageView share = (ImageView) view.findViewById(R.id.img_item_news_share);
             final ImageView optionsMenu = (ImageView) view.findViewById(R.id.img_item_news_optionsmenu);
 
-            final int columnNewsImage = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_URL_TO_IMAGE);
-            final int columnHeadline = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_TITLE);
+            int columnNewsImage = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_URL_TO_IMAGE);
+            int columnHeadline = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_TITLE);
             int columnProviderName = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_AUTHOR);
-            final int columnNewsURL = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_URL);
+            int columnNewsURL = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_URL);
             int columnPublished = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_URL);
-            final int columnDes = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_DESCRIPTION);
+            int columnDes = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_DESCRIPTION);
             int columnFav = cursor.getColumnIndexOrThrow(NewsContract.News.COLUMN_FAV);
+
+            final String newsImageUrl = cursor.getString(columnNewsImage);
+            final String headline = cursor.getString(columnHeadline);
+            final String newsUrl = cursor.getString(columnNewsURL);
+            final String description = cursor.getString(columnDes);
+            final String providerName = cursor.getString(columnProviderName);
+            final String published = cursor.getString(columnPublished);
+            final String fav = cursor.getString(columnFav);
 
             newsProviderImage.setImageResource(R.drawable.ic_account_circle_black_24px);
             view.setOnClickListener(new View.OnClickListener() {
@@ -94,24 +101,22 @@ public class NewsCursorAdapter extends CursorAdapter {
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ContentActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                    intent.putExtra("url", cursor.getString(columnNewsImage));
-                    intent.putExtra("title", cursor.getString(columnHeadline));
-                    intent.putExtra("urlNews", cursor.getString(columnNewsURL));
-                    intent.putExtra("description", cursor.getString(columnDes));
+                    intent.putExtra("url", newsImageUrl);
+                    intent.putExtra("title", headline);
+                    intent.putExtra("urlNews", newsUrl);
+                    intent.putExtra("description", description);
                     context.startActivity(intent);
                 }
             });
 
-            if (newsImage != null) {
-                Glide.with(context)
-                        .load(cursor.getString(columnNewsImage))
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(newsImage);
-            }
+            Glide.with(context)
+                    .load(newsImageUrl)
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(newsImage);
 
-            headline.setText(cursor.getString(columnHeadline));
-            newsProviderName.setText(cursor.getString(columnProviderName));
+            newsHeadline.setText(headline);
+            newsProviderName.setText(providerName);
             optionsMenu.setImageResource(R.drawable.ic_more_vert_black_24dp);
             optionsMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -120,9 +125,8 @@ public class NewsCursorAdapter extends CursorAdapter {
                     showPopupMenu(optionsMenu);
                 }
             });
-            newsPublished.setText(cursor.getString(columnPublished));
+            newsPublished.setText(published);
 
-            final String fav = cursor.getString(columnFav);
             if ("Y".equals(fav)) {
                 addToFav.setImageResource(R.drawable.ic_turned_in_black_24dp);
             } else addToFav.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
@@ -159,14 +163,13 @@ public class NewsCursorAdapter extends CursorAdapter {
                         public void run() {
                             Intent sendIntent = new Intent();
                             sendIntent.setAction(Intent.ACTION_SEND);
-                            sendIntent.putExtra(Intent.EXTRA_TEXT, cursor.getString(columnNewsURL));
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, newsUrl);
                             sendIntent.setType("text/plain");
                             context.startActivity(sendIntent);
                         }
                     }).start();
                 }
             });
-            Log.i("TAG", "bindView: cursor id " + cursor.getPosition());
         }
     }
 

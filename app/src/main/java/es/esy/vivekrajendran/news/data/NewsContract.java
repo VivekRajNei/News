@@ -7,7 +7,6 @@ public class NewsContract {
 
     static final String DB_NAME = "News.db";
     static final int DB_VERSION = 1;
-
     static final String PATH_NEWS = "news";
     static final String PATH_PROVIDER = "provider";
     static final String PATH_IMAGE = "image";

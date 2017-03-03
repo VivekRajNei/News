@@ -70,9 +70,9 @@ public class ImageFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onViewCreated(view, savedInstanceState);
         GridView gridView = (GridView) view.findViewById(R.id.lv_frag_images);
         imageAdapter = new Adapter(getActivity(), null);
-        gridView.setNumColumns(2);
+        gridView.setNumColumns(4);
         gridView.setAdapter(imageAdapter);
-        getData(BaseUrl + query);
+//        getData(BaseUrl + query);
         getLoaderManager().initLoader(IMAGE_LOADER, null, this);
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_frag_images);

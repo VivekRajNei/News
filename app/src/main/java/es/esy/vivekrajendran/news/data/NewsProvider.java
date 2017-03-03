@@ -38,7 +38,8 @@ public class NewsProvider extends ContentProvider {
     public static final String TAG = "TAG";
     private static final int NEWS = 100;
     private static final int NEWS_ID = 101;
-    private static final int NEWS_ID_MARK = 102;
+    private static final int NEWS_ID_FAV = 102;
+    private static final int NEWS_ID_SEARCH = 103;
     private static final int PROVIDER = 200;
     private static final int PROVIDER_ID = 201;
     private static final int IMAGE = 300;
@@ -50,6 +51,7 @@ public class NewsProvider extends ContentProvider {
     static {
         sUriMatcher.addURI(NewsContract.CONTENT_AUTHORITY, NewsContract.PATH_NEWS, NEWS);
         sUriMatcher.addURI(NewsContract.CONTENT_AUTHORITY, NewsContract.PATH_NEWS + "/#", NEWS_ID);
+        sUriMatcher.addURI(NewsContract.CONTENT_AUTHORITY, NewsContract.PATH_NEWS + "/search", NEWS_ID_SEARCH);
         sUriMatcher.addURI(NewsContract.CONTENT_AUTHORITY, NewsContract.PATH_PROVIDER, PROVIDER);
         sUriMatcher.addURI(NewsContract.CONTENT_AUTHORITY, NewsContract.PATH_PROVIDER + "/#", PROVIDER_ID);
         sUriMatcher.addURI(NewsContract.CONTENT_AUTHORITY, NewsContract.PATH_IMAGE, IMAGE);
@@ -57,7 +59,7 @@ public class NewsProvider extends ContentProvider {
         sUriMatcher.addURI(NewsContract.CONTENT_AUTHORITY, NewsContract.PATH_VIDEO, VIDEO);
         sUriMatcher.addURI(NewsContract.CONTENT_AUTHORITY, NewsContract.PATH_VIDEO + "/#", VIDEO_ID);
         sUriMatcher.addURI(NewsContract.CONTENT_AUTHORITY, NewsContract.PATH_NEWS +
-                "/" + NewsContract.News.COLUMN_FAV + "/#", NEWS_ID_MARK);
+                "/" + NewsContract.News.COLUMN_FAV + "/#", NEWS_ID_FAV);
     }
 
     private DBHelper mDBHelper;
@@ -82,6 +84,7 @@ public class NewsProvider extends ContentProvider {
             case NEWS:
                 cursor = mReadableDB.rawQuery("SELECT * FROM " + NewsContract.News.TABLE_NAME
                         + " ORDER BY  rowid DESC", null);
+                Log.i(TAG, "query: " + cursor.getCount());
                 break;
             case NEWS_ID:
                 selection = "rowid" + "=?";
@@ -89,12 +92,19 @@ public class NewsProvider extends ContentProvider {
                 cursor = mReadableDB.query(NewsContract.News.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
-            case NEWS_ID_MARK:
+            case NEWS_ID_FAV:
                 selection = NewsContract.News.COLUMN_ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 String[] projectionFav = new String[]{NewsContract.News.COLUMN_FAV};
                 cursor = mReadableDB.query(NewsContract.News.TABLE_NAME, projectionFav, selection,
                         selectionArgs, null, null, null);
+                break;
+            case NEWS_ID_SEARCH:
+                Log.i(TAG, "query: NEWS_ID_SEARCH");
+                String query = "SELECT * FROM " + NewsContract.News.TABLE_NAME + " WHERE  "
+                        + NewsContract.News.COLUMN_DESCRIPTION + ", "
+                        + NewsContract.News.COLUMN_TITLE + " LIKE '%" + selection + "%'";
+                cursor = mReadableDB.rawQuery(query, null);
                 break;
             case PROVIDER:
                 cursor = mReadableDB.query(NewsContract.Provider.TABLE_NAME, projection, selection, selectionArgs,
@@ -239,6 +249,7 @@ public class NewsProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         final int match = sUriMatcher.match(uri);
+        Log.i(TAG, "update: " + uri.toString() + " Match " + match);
         switch (match) {
             case NEWS:
                 return updateData(uri, values, selection, selectionArgs);

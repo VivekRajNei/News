@@ -25,12 +25,12 @@ package es.esy.vivekrajendran.news.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 public class UserPref {
 
     private SharedPreferences jsonSharedPreferences;
     private SharedPreferences dbSharedPrefernces;
+    private int timeLapse = 43200;
 
     private UserPref(Context context) {
         dbSharedPrefernces = context.getSharedPreferences(PrefContract.DbTime.PREF_NAME, Context.MODE_PRIVATE);
@@ -48,29 +48,23 @@ public class UserPref {
     }
 
     public boolean isJStringAvailable() {
-        boolean availbilty = jsonSharedPreferences.getString(PrefContract.Json.JSTRING, null) != null;
-        Log.i("TAG", "isJStringAvailable: " + availbilty);
-        return availbilty;
+        return jsonSharedPreferences.getString(PrefContract.Json.JSTRING, null) != null;
     }
 
     public boolean isImageFetchable() {
-        Log.i("TAG", "isProvidersFetchable: " + getCurrentTime() + " " +
-                getImageTime() + ((getCurrentTime() - getImageTime()) > 43200));
-        return ((getCurrentTime() - getImageTime()) < 43200);
+        return ((getCurrentTime() - getImageTime()) < timeLapse);
     }
 
     public boolean isVideoFetchable() {
-        return ((getCurrentTime() - getVideoTime()) < 43200);
+        return ((getCurrentTime() - getVideoTime()) < timeLapse);
     }
 
     public boolean isNewsFetchable() {
-        return ((getCurrentTime() - getNewsTime()) < 43200);
+        return ((getCurrentTime() - getNewsTime()) < timeLapse);
     }
 
     public boolean isProvidersFetchable() {
-        Log.i("TAG", "isProvidersFetchable: " + getCurrentTime() + " " +
-                getProvidersTime() + ((getCurrentTime() - getProvidersTime()) > 43200));
-        return ((getCurrentTime() - getProvidersTime()) < 43200);
+        return ((getCurrentTime() - getProvidersTime()) < timeLapse);
     }
 
     private long getImageTime() {

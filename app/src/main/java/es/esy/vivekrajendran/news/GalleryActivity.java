@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import es.esy.vivekrajendran.news.fragments.ImageFragment;
+import es.esy.vivekrajendran.news.fragments.LatestNewsFragment;
 import es.esy.vivekrajendran.news.fragments.VideoFragment;
 
 /**
@@ -123,7 +124,7 @@ public class GalleryActivity extends AppCompatActivity {
             if (position == 0) {
                 return new ImageFragment();
             } else if (position == 1) {
-                return new VideoFragment();
+                return new LatestNewsFragment();
             }
             return PlaceholderFragment.newInstance(position + 1);
         }

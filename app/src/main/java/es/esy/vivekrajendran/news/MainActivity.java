@@ -51,6 +51,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import es.esy.vivekrajendran.news.data.NewsContract;
 import es.esy.vivekrajendran.news.dialogs.DevDialog;
 import es.esy.vivekrajendran.news.fragments.FavouritesFragment;
 import es.esy.vivekrajendran.news.fragments.LatestNewsFragment;
@@ -70,44 +71,41 @@ public class MainActivity extends AppCompatActivity
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private NavigationView navigationView;
     private SearchView searchView;
+    private BottomNavigationView mBottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
-        try {
-            setContentView(R.layout.activity_main);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
-            setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbar);
 
-            initListener();
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.setDrawerListener(toggle);
-            toggle.syncState();
+        initListener();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-            navigationView = (NavigationView) findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(this);
-            searchView = (SearchView) findViewById(R.id.sv_main);
-            searchView.setOnQueryTextListener(this);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+//            searchView = (SearchView) findViewById(R.id.sv_main);
+//        searchView.setOnQueryTextListener(this);
 
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_frame, new LatestNewsFragment())
-                    .commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_frame, new LatestNewsFragment())
+                .commit();
 
-            BottomNavigationView mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-            mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    changeFragment(item.getItemId());
-                    return true;
-                }
+        mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                changeFragment(item.getItemId());
+                return true;
+            }
         });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -132,7 +130,6 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_gallery:
-                //new NewsAsync(getApplicationContext()).execute(" https://newsapi.org/v1/articles?source=the-next-web&sortBy=latest&apiKey=a65e2431ef9141ab93e78509b14554d0");
                 startActivity(new Intent(MainActivity.this, GalleryActivity.class));
                 break;
             case R.id.nav_settings:
@@ -237,25 +234,31 @@ public class MainActivity extends AppCompatActivity
      * @param id param passed to specify fragment needs to be shown
      */
     private void changeFragment(int id) {
+        Log.i("TAG", "changeFragment: " + id);
         switch (id) {
             case R.id.menu_btmnav_latest:
-                searchView.setVisibility(View.VISIBLE);
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("isSearch", false);
+                bundle.putString("uri", NewsContract.News.CONTENT_URI.toString());
+                bundle.putStringArray("projection", null);
+                bundle.putString("selection", null);
+                bundle.putStringArray("selectionArgs", null);
+                bundle.putString("sortOrder", null);
+
                 LatestNewsFragment latestNewsFragment = new LatestNewsFragment();
                 latestNewsFragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.main_frame, latestNewsFragment)
                         .commit();
+                Log.i("TAG", "changeFragment: LatestNewsFragment");
                 break;
             case R.id.menu_btmnav_provider:
-                searchView.setVisibility(View.GONE);
+
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.main_frame, new ProviderFragment())
                         .commit();
                 break;
             case R.id.menu_btmnav_starred:
-                searchView.setVisibility(View.GONE);
+
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.main_frame, new FavouritesFragment())
                         .commit();
@@ -282,6 +285,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onQueryTextChange(String newText) {
+//        mBottomNavigationView.
         return false;
     }
 }
