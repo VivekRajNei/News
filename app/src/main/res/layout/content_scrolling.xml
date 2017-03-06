@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="es.esy.vivekrajendran.news.ContentActivity"
+    tools:context="es.esy.vivekrajendran.news.MoreNewsActivity"
     tools:showIn="@layout/activity_scrolling">
 
     <RelativeLayout
@@ -15,6 +15,7 @@
             android:id="@+id/tv_content_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_margin="@dimen/text_margin"/>
 
         <FrameLayout

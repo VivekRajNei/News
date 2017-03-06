@@ -64,7 +64,7 @@ public class ProviderFragment extends Fragment implements LoaderManager.LoaderCa
         super.onViewCreated(view, savedInstanceState);
 
         String url = "https://newsapi.org/v1/sources?apikey=6e661062a47d4eac83dc8a7ee0dcc96b";
-        getData(url);
+//        getData(url);
         providerAdapter = new ProviderAdapter(getContext(), null);
         GridView gridView = (GridView) view.findViewById(R.id.gv_providers_fragment);
         gridView.setNumColumns(2);
@@ -115,7 +115,7 @@ public class ProviderFragment extends Fragment implements LoaderManager.LoaderCa
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.item_provider, parent, true);
+            return LayoutInflater.from(context).inflate(R.layout.item_provider, parent, false);
         }
 
         @Override
@@ -129,7 +129,6 @@ public class ProviderFragment extends Fragment implements LoaderManager.LoaderCa
             Glide.with(context)
                     .load(cursor.getString(columnImage))
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                    .centerCrop()
                     .into(imageView);
             title.setText(cursor.getString(columnName));
         }

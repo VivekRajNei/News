@@ -75,7 +75,10 @@ public class PhotoViewerActivity extends AppCompatActivity {
 //            if (position == -1) {
 //                cursor.move(position + 1);
 //            } else
-                cursor.move(position+1);
+//                cursor.move(position+1);
+            if (cursor.moveToNext()) {
+                cursor.move(position);
+            }
             int columnURL = cursor.getColumnIndexOrThrow(NewsContract.Images.COLUMN_URL);
             Bundle bundle = new Bundle();
             bundle.putString("url", cursor.getString(columnURL));

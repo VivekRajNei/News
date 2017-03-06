@@ -49,7 +49,7 @@ public class FavouritesFragment extends Fragment implements LoaderManager.Loader
             View emptyView = view.findViewById(R.id.empty_view);
 
             String url = "https://newsapi.org/v1/articles?source=the-next-web&sortBy=latest&apiKey=a65e2431ef9141ab93e78509b14554d0";
-            getData(url);
+//            getData(url);
             latestNewsListView.setEmptyView(emptyView);
             newsCursorAdapter = new NewsCursorAdapter(getActivity(), null);
             latestNewsListView.setAdapter(newsCursorAdapter);

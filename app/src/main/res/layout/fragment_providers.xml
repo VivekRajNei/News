@@ -10,6 +10,9 @@
         android:horizontalSpacing="10dp"
         android:verticalSpacing="10dp"
         android:gravity="center"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:background="@android:color/black"
         android:stretchMode="columnWidth">
     </GridView>
 </FrameLayout>

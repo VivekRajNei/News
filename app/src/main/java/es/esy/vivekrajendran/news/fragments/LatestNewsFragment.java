@@ -50,7 +50,6 @@ import es.esy.vivekrajendran.news.data.UserPref;
 import es.esy.vivekrajendran.news.network.NewsAsync;
 import es.esy.vivekrajendran.news.util.NetworkChecker;
 import es.esy.vivekrajendran.news.util.NewsCursorAdapter;
-import es.esy.vivekrajendran.news.util.SearchListener;
 
 public class LatestNewsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener {
 
@@ -62,7 +61,6 @@ public class LatestNewsFragment extends Fragment implements LoaderManager.Loader
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         try {
             return LayoutInflater.from(getContext()).inflate(R.layout.fragment_latest, container, false);
         } catch (Exception e){
@@ -75,6 +73,7 @@ public class LatestNewsFragment extends Fragment implements LoaderManager.Loader
         super.onViewCreated(view, savedInstanceState);
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("loading");
+        setHasOptionsMenu(true);
 
         try {
             Log.i("TAG", "onViewCreated: LatestNewsFragment loading finished");
@@ -149,6 +148,7 @@ public class LatestNewsFragment extends Fragment implements LoaderManager.Loader
         inflater.inflate(R.menu.menu_search, menu);
         final MenuItem item = menu.findItem(R.id.app_bar_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+//        searchView.setOnQueryTextListener(this);
 
         MenuItemCompat.setOnActionExpandListener(item,
                 new MenuItemCompat.OnActionExpandListener() {
@@ -162,20 +162,20 @@ public class LatestNewsFragment extends Fragment implements LoaderManager.Loader
                     }
                 });
 
-        searchView.setOnCloseListener( new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                getLoaderManager().initLoader(LATEST_NEWS_LOADER, null, LatestNewsFragment.this);
-                return true;
-            }
-        });
+//        searchView.setOnCloseListener( new SearchView.OnCloseListener() {
+//            @Override
+//            public boolean onClose() {
+//                getLoaderManager().initLoader(LATEST_NEWS_LOADER, null, LatestNewsFragment.this);
+//                return true;
+//            }
+//        });
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.app_bar_search) {
-
+            Log.i("TAG", "onOptionsItemSelected: Search clicked");
         }
         return true;
     }

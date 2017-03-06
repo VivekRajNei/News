@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:id="@+id/cool_content"
-    tools:context="es.esy.vivekrajendran.news.ContentActivity">
+    tools:context="es.esy.vivekrajendran.news.MoreNewsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"

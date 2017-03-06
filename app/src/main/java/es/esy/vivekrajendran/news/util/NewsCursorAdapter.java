@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,7 +43,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import es.esy.vivekrajendran.news.R;
-import es.esy.vivekrajendran.news.ContentActivity;
+import es.esy.vivekrajendran.news.MoreNewsActivity;
 import es.esy.vivekrajendran.news.data.NewsContract;
 
 public class NewsCursorAdapter extends CursorAdapter {
@@ -99,7 +98,7 @@ public class NewsCursorAdapter extends CursorAdapter {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, ContentActivity.class);
+                    Intent intent = new Intent(context, MoreNewsActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                     intent.putExtra("url", newsImageUrl);
                     intent.putExtra("title", headline);

@@ -64,7 +64,7 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".PhotoViewerActivity" />
         <activity
-            android:name=".ContentActivity"
+            android:name=".MoreNewsActivity"
             android:label="@string/title_activity_scrolling"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme"/>

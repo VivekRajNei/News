@@ -21,7 +21,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import es.esy.vivekrajendran.news.util.NetworkChecker;
 
 
-public class ContentActivity extends AppCompatActivity {
+public class MoreNewsActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private WebView moreWebView;
@@ -75,7 +75,7 @@ public class ContentActivity extends AppCompatActivity {
                         sendIntent.setAction(Intent.ACTION_SEND);
                         sendIntent.putExtra(Intent.EXTRA_TEXT, intent.getStringExtra("urlNews"));
                         sendIntent.setType("text/plain");
-                        ContentActivity.this.startActivity(sendIntent);
+                        MoreNewsActivity.this.startActivity(sendIntent);
                     }
                 }).start();
             }
